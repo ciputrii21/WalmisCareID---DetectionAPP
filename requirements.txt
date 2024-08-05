@@ -1,3 +1,0 @@
-Flask==2.2.5
-pymongo==4.8.0  # Use the latest stable version
-gunicorn==20.1.0
