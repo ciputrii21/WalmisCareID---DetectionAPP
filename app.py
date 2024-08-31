@@ -18,7 +18,7 @@ def index():
         return redirect(url_for('index'))
 
 # Koneksi ke MongoDB
-client = MongoClient('mongodb://localhost:27017')
+client = MongoClient('mongodb+srv://putrishalom80:TWYRo23vSfBvldxo@cluster0.mu3fvma.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.prediction_db
 
 # Form untuk registrasi
