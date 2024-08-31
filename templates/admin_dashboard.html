@@ -78,7 +78,7 @@
           <h2>WalmisCareID adalah aplikasi yang dapat mengidentifikasi tingkat kesehatan paru-paru berdasarkan gambar.</h2>
           <h3>Aplikasi ini memiliki keunggulan seperti berikut:</h3>
           <ul>
-            <li><i class="bi bi-check-circle"></i> Model deep learning dibuat menggunakan 142 dataset train citra paru-paru di RSUD Walanda Maramis.</li>
+            <li><i class="bi bi-check-circle"></i> Model deep learning dibuat menggunakan 142 dataset train citra paru-paru di RSUD Walanda Maramis & Dataset Gabungan dari Kaggle.</li>
             <li><i class="bi bi-check-circle"></i> Aplikasi ini dapat mengidentifikasi 3 kelas paru pada citra X-RAY.</li>
             <li><i class="bi bi-check-circle"></i> Desain yang mudah digunakan dan responsif di semua perangkat seperti ponsel, windows, dan tablet.</li>
           </ul>
@@ -115,11 +115,15 @@
               <td>{{ user.email }}</td>
               <td>{{ user.role }}</td>
               <td>
-                <button class="btn btn-danger btn-sm delete-user" data-username="{{ user.username }}">Hapus</button>
+                {% if user.role != 'admin' and user.username != 'admin' %}
+                  <button class="btn btn-danger btn-sm delete-user" data-username="{{ user.username }}">Hapus</button>
+                {% else %}
+                  <span class="text-muted">Tidak ada aksi</span>
+                {% endif %}
               </td>
             </tr>
             {% endfor %}
-          </tbody>
+          </tbody>          
         </table>
       </div>
     </div>
@@ -178,6 +182,36 @@
 
 <!-- Custom JS File -->
 <script>
+    // Panggil fungsi reloadUserTable() setelah pengguna berhasil ditambahkan
+    document.addEventListener("DOMContentLoaded", function () {
+      // Ambil form tambah pengguna
+      var registerForm = document.getElementById('registerForm');
+      registerForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Menghentikan pengiriman form standar
+        
+        // Kirim data form menggunakan Fetch API
+        fetch(registerForm.action, {
+          method: registerForm.method,
+          body: new FormData(registerForm)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Cek apakah penambahan pengguna berhasil
+          if (data.success) {
+            // Jika berhasil, panggil fungsi reloadUserTable()
+            reloadUserTable();
+            // Reset form
+            registerForm.reset();
+          } else {
+            // Jika gagal, tampilkan pesan kesalahan
+            alert(data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      });
+    });
   document.addEventListener('DOMContentLoaded', function() {
     const deleteButtons = document.querySelectorAll('.delete-user');
 
