@@ -85,7 +85,7 @@ def get_all_images():
     return db.images.find()
 
 # Daftar kelas label
-labels = ['Bronchitis', 'Pneumonia', 'Tuberculosis']
+labels = ['Pneumonia', 'Tuberculosis', 'Unknown']
 
 def preprocess(img_path, input_size):
     nimg = img_path.convert('RGB').resize(input_size, resample=0)
@@ -103,7 +103,7 @@ def get_output():
         if 'username' not in session:
             return redirect(url_for('login'))
         
-        model = load_model('model2.h5', compile=False)
+        model = load_model('modelfold2.h5', compile=False)
         img = request.files['photo']
         img_path = 'static/img/predict_img/' + img.filename
         img.save(img_path)
@@ -116,11 +116,16 @@ def get_output():
         y = model.predict(X)
         hasil = labels[np.argmax(y)]
 
-        # Simpan informasi gambar ke MongoDB
+        # Jika hasil prediksi adalah "Unknown", tampilkan notifikasi dan kembali ke halaman input
+        if hasil == 'Unknown':
+            return redirect(url_for('index1', show_popup='true'))
+
+        # Simpan informasi gambar ke MongoDB jika prediksi valid
         add_image(img.filename, hasil, img_path)
 
         # Menampilkan hasil prediksi di halaman predict.html
         return render_template("predict.html", result=hasil, gambar=img_path, hasil=hasil)
+
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():

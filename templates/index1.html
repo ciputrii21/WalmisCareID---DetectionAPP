@@ -262,7 +262,27 @@
   <script src="static/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="static/js/main.js"></script>
+  <script src="static/js/main.js">
+    
+  </script>
+
+<!-- Notifikasi Pop-up -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Debug: Periksa apakah parameter show_popup ada di URL
+    console.log("URL:", window.location.href);
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const showPopup = urlParams.get('show_popup');
+    console.log("showPopup parameter:", showPopup); // Debug line
+
+    if (showPopup === 'true') {
+      alert("Gambar yang dimasukkan tidak valid. Harap masukkan gambar X-ray.");
+      // Mengalihkan ke halaman index1 tanpa parameter query
+      window.location.href = "{{ url_for('index1') }}";
+    }
+  });
+</script>
 
 </body>
 
