@@ -93,6 +93,17 @@
         <div>
           <h2>Daftar Pengguna</h2>
           <p>Berikut ini adalah daftar pengguna yang telah terdaftar di sistem.</p>
+          <!-- Flash messages for success -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
         </div>
         <div>
           <a href="/tambah_pengguna" class="btn btn-success">Tambah Pengguna</a>
@@ -182,36 +193,36 @@
 
 <!-- Custom JS File -->
 <script>
-    // Panggil fungsi reloadUserTable() setelah pengguna berhasil ditambahkan
-    document.addEventListener("DOMContentLoaded", function () {
-      // Ambil form tambah pengguna
-      var registerForm = document.getElementById('registerForm');
-      registerForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Menghentikan pengiriman form standar
+    // // Panggil fungsi reloadUserTable() setelah pengguna berhasil ditambahkan
+    // document.addEventListener("DOMContentLoaded", function () {
+    //   // Ambil form tambah pengguna
+    //   var registerForm = document.getElementById('registerForm');
+    //   registerForm.addEventListener('submit', function (event) {
+    //     event.preventDefault(); // Menghentikan pengiriman form standar
         
-        // Kirim data form menggunakan Fetch API
-        fetch(registerForm.action, {
-          method: registerForm.method,
-          body: new FormData(registerForm)
-        })
-        .then(response => response.json())
-        .then(data => {
-          // Cek apakah penambahan pengguna berhasil
-          if (data.success) {
-            // Jika berhasil, panggil fungsi reloadUserTable()
-            reloadUserTable();
-            // Reset form
-            registerForm.reset();
-          } else {
-            // Jika gagal, tampilkan pesan kesalahan
-            alert(data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-      });
-    });
+    //     // Kirim data form menggunakan Fetch API
+    //     fetch(registerForm.action, {
+    //       method: registerForm.method,
+    //       body: new FormData(registerForm)
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       // Cek apakah penambahan pengguna berhasil
+    //       if (data.success) {
+    //         // Jika berhasil, panggil fungsi reloadUserTable()
+    //         reloadUserTable();
+    //         // Reset form
+    //         registerForm.reset();
+    //       } else {
+    //         // Jika gagal, tampilkan pesan kesalahan
+    //         alert(data.message);
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.error('Error:', error);
+    //     });
+    //   });
+    // });
   document.addEventListener('DOMContentLoaded', function() {
     const deleteButtons = document.querySelectorAll('.delete-user');
 

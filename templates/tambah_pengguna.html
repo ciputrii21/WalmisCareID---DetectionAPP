@@ -89,7 +89,17 @@
           <div class="col-lg-6 offset-lg-3">
             <div class="register-form">
               <h2>Tambah Pengguna</h2>
-              
+              <!-- Flash messages for errors and success -->
+                  {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
               <form id="registerForm" action="{{ url_for('tambah_pengguna') }}" method="post">
                 <div class="form-group">
                     <label for="username">Username:</label>
@@ -113,7 +123,8 @@
                       <!-- Opsi admin dihilangkan -->
                       <option value="user">User</option>
                   </select>
-              </div>              
+              </div> 
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mt-3">Kembali</a>             
                 <button type="submit" class="btn btn-primary mt-3">Tambah Pengguna</button>
             </form>            
               <!-- <p class="mt-3">Sudah punya akun? <a href="/login">Login di sini</a></p> -->
@@ -181,36 +192,36 @@
 
   <!-- Template Main JS File -->
   <script src="static/js/main.js">
-    // // Panggil fungsi reloadUserTable() setelah pengguna berhasil ditambahkan
-    // document.addEventListener("DOMContentLoaded", function () {
-    //   // Ambil form tambah pengguna
-    //   var registerForm = document.getElementById('registerForm');
-    //   registerForm.addEventListener('submit', function (event) {
-    //     event.preventDefault(); // Menghentikan pengiriman form standar
+    // Panggil fungsi reloadUserTable() setelah pengguna berhasil ditambahkan
+    document.addEventListener("DOMContentLoaded", function () {
+      // Ambil form tambah pengguna
+      var registerForm = document.getElementById('registerForm');
+      registerForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Menghentikan pengiriman form standar
         
-    //     // Kirim data form menggunakan Fetch API
-    //     fetch(registerForm.action, {
-    //       method: registerForm.method,
-    //       body: new FormData(registerForm)
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       // Cek apakah penambahan pengguna berhasil
-    //       if (data.success) {
-    //         // Jika berhasil, panggil fungsi reloadUserTable()
-    //         reloadUserTable();
-    //         // Reset form
-    //         registerForm.reset();
-    //       } else {
-    //         // Jika gagal, tampilkan pesan kesalahan
-    //         alert(data.message);
-    //       }
-    //     })
-    //     .catch(error => {
-    //       console.error('Error:', error);
-    //     });
-    //   });
-    // });
+        // Kirim data form menggunakan Fetch API
+        fetch(registerForm.action, {
+          method: registerForm.method,
+          body: new FormData(registerForm)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Cek apakah penambahan pengguna berhasil
+          if (data.success) {
+            // Jika berhasil, panggil fungsi reloadUserTable()
+            reloadUserTable();
+            // Reset form
+            registerForm.reset();
+          } else {
+            // Jika gagal, tampilkan pesan kesalahan
+            alert(data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      });
+    });
   </script>
 
 </body>

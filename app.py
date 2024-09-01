@@ -58,7 +58,7 @@ def add_user(username, password, email, role):
     db.users.insert_one({
         "username": username,
         "password": hashed_password,
-        "email" : email,
+        "email": email,  # Tambahkan email di sini
         "role": role
     })
 
@@ -131,7 +131,7 @@ def get_output():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        add_user(form.username.data, form.password.data, form.role.data)
+        add_user(form.username.data, form.password.data, form.email.data, form.role.data)
         return redirect(url_for('login'))
     return render_template("register.html", form=form)
 
@@ -142,13 +142,24 @@ def login():
     elif request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
+        selected_role = request.form['role']  # Role yang dipilih di form
+
+        # Verifikasi user berdasarkan username dan password
         user = check_user(username, password)
-        
+
         if user:
+            actual_role = user['role']  # Role yang tersimpan di database
+
+            # Cek apakah role yang dipilih sesuai dengan yang ada di database
+            if selected_role != actual_role:
+                flash(f"Anda tidak memiliki akses sebagai {selected_role}. Silakan login sebagai {actual_role}.")
+                return redirect(url_for('login'))
+
+            # Jika role cocok, lanjutkan ke halaman yang sesuai
             session['username'] = username
-            session['role'] = user['role']
-            if user['role'] == 'admin':
+            session['role'] = actual_role
+            
+            if actual_role == 'admin':
                 return redirect(url_for('admin_dashboard'))
             else:
                 return redirect(url_for('index1'))
@@ -159,7 +170,10 @@ def login():
 @app.route("/index1")
 def index1():
     if 'username' in session:
-        return render_template("index1.html")
+        if session['role'] == 'user':
+            return render_template("index1.html")
+        else:
+            return redirect(url_for('admin_dashboard'))
     else:
         return redirect(url_for('login'))
 
@@ -195,9 +209,10 @@ def tambah_pengguna():
         # Tambahkan pengguna baru ke dalam database
         add_user(username, password, email, role)
         
+    #     return redirect(url_for('admin_dashboard', success=True))
+    # return render_template('tambah_pengguna.html', success=request.args.get('success'))
         flash('Pengguna berhasil ditambahkan.', 'success')
         return redirect(url_for('admin_dashboard'))
-    
     return render_template('tambah_pengguna.html')
 
 @app.route('/hapus_pengguna/<username>', methods=['DELETE'])
